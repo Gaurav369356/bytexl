@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Registration</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Important for width to include padding */
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: rgb(67, 26, 26);
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .error-message {
+        color: red;
+        margin-top: -5px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Student Registration Form</h2>
+
+    <form id="registrationForm" action="#" method="post">
+      <!-- Replace '#' with your server-side script -->
+
+      <label for="name">Name:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="Enter your full name"
+        minlength="2"
+      />
+      <div class="error-message" id="nameError"></div>
+
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        placeholder="Enter your email address"
+      />
+      <div class="error-message" id="emailError"></div>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" required min="5" max="120" />
+      <div class="error-message" id="ageError"></div>
+
+      <input type="submit" value="Register" />
+    </form>
+
+    <script>
+      const form = document.getElementById("registrationForm");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const ageInput = document.getElementById("age");
+      const nameError = document.getElementById("nameError");
+      const emailError = document.getElementById("emailError");
+      const ageError = document.getElementById("ageError");
+
+      form.addEventListener("submit", function (event) {
+        let isValid = true;
+
+        // Name validation
+        if (nameInput.value.length < 2) {
+          nameError.textContent = "Name must be at least 2 characters long.";
+          isValid = false;
+        } else {
+          nameError.textContent = "";
+        }
+
+        // Email validation (basic)
+        if (
+          !emailInput.value.includes("@") ||
+          !emailInput.value.includes(".")
+        ) {
+          emailError.textContent = "Please enter a valid email address.";
+          isValid = false;
+        } else {
+          emailError.textContent = "";
+        }
+
+        if (ageInput.value < 5 || ageInput.value > 120) {
+          ageError.textContent = "Age must be between 5 and 120.";
+          isValid = false;
+        } else {
+          ageError.textContent = "";
+        }
+
+        if (!isValid) {
+          event.preventDefault();
+        }
+      });
+      link;
+    </script>
+  </body>
+</html>
