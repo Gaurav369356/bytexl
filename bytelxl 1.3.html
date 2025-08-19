@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg-primary: #f8f9fa;
+        --bg-secondary: #ffffff;
+        --text-color: #212529;
+        --border-color: #e2e8f0;
+        --accent-color: #4c51bf;
+        --sidebar-bg: #343a40;
+        --sidebar-text: #ffffff;
+        --button-bg: #4c51bf;
+        --button-text: #ffffff;
+        --button-hover-bg: #3e44a8;
+      }
+
+      .dark-theme {
+        --bg-primary: #1a202c;
+        --bg-secondary: #2d3748;
+        --text-color: #e2e8f0;
+        --border-color: #4a5568;
+        --accent-color: #63b3ed;
+        --sidebar-bg: #1a202c;
+        --sidebar-text: #e2e8f0;
+        --button-bg: #63b3ed;
+        --button-text: #1a202c;
+        --button-hover-bg: #4299e1;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 250px 1fr; /* Sidebar and main content */
+        grid-template-rows: auto 1fr; /* Header and content area */
+        grid-template-areas:
+          "sidebar header"
+          "sidebar main";
+        min-height: 100vh;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto 1fr;
+          grid-template-areas:
+            "header"
+            "sidebar-toggle"
+            "main";
+        }
+
+        .sidebar {
+          display: none;
+          grid-area: unset;
+        }
+
+        .sidebar.open {
+          display: block;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 250px;
+          height: 100%;
+          z-index: 10;
+          transform: translateX(0);
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar:not(.open) {
+          transform: translateX(-100%);
+        }
+
+        .sidebar-toggle-button {
+          display: block;
+          grid-area: sidebar-toggle;
+        }
+      }
+
+      .mobile-menu-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9;
+      }
+
+      .mobile-menu-overlay.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="transition-colors duration-300">
+    <div class="mobile-menu-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="dashboard-grid">
+      <!-- Header -->
+      <header
+        class="bg-white p-4 shadow-md flex items-center justify-between col-span-2 md:col-span-1 rounded-bl-lg rounded-br-lg md:rounded-tr-lg"
+        style="
+          grid-area: header;
+          background-color: var(--bg-secondary);
+          border-bottom: 1px solid var(--border-color);
+        "
+      >
+        <div class="flex items-center">
+          <!-- Mobile menu toggle button -->
+          <button
+            id="sidebar-toggle"
+            class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-gray-700 dark:text-gray-300"
+            onclick="toggleSidebar()"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+          <h1 class="text-2xl font-bold ml-4" style="color: var(--text-color)">
+            Admin Dashboard
+          </h1>
+        </div>
+
+        <button
+          id="theme-toggle"
+          class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+          style="background-color: var(--button-bg); color: var(--button-text)"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h1M3 12h1m15.325-4.275l-.707-.707M4.379 19.379l-.707-.707m11.314 0l.707-.707M4.379 4.379l.707-.707"
+            ></path>
+          </svg>
+        </button>
+      </header>
+
+      <aside
+        class="sidebar bg-gray-800 text-white p-6 md:block rounded-tr-lg rounded-br-lg"
+        style="
+          grid-area: sidebar;
+          background-color: var(--sidebar-bg);
+          color: var(--sidebar-text);
+        "
+      >
+        <nav>
+          <ul class="space-y-4">
+            <li>
+              <a
+                href="#"
+                class="block p-3 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                style="
+                  color: var(--sidebar-text);
+                  background-color: var(--accent-color);
+                "
+                >Dashboard</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block p-3 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                style="color: var(--sidebar-text)"
+                >Users</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block p-3 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                style="color: var(--sidebar-text)"
+                >Products</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block p-3 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                style="color: var(--sidebar-text)"
+                >Orders</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="block p-3 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                style="color: var(--sidebar-text)"
+                >Settings</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main
+        class="p-6 overflow-auto"
+        style="grid-area: main; background-color: var(--bg-primary)"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border"
+            style="
+              background-color: var(--bg-secondary);
+              border-color: var(--border-color);
+            "
+          >
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--text-color)"
+            >
+              Total Users
+            </h2>
+            <p class="text-3xl font-bold" style="color: var(--accent-color)">
+              1,234
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Last 30 days
+            </p>
+          </div>
+          <!-- Card 2 -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border"
+            style="
+              background-color: var(--bg-secondary);
+              border-color: var(--border-color);
+            "
+          >
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--text-color)"
+            >
+              Revenue
+            </h2>
+            <p class="text-3xl font-bold" style="color: var(--accent-color)">
+              ₹56,789
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Year to Date
+            </p>
+          </div>
+          <!-- Card 3 -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border"
+            style="
+              background-color: var(--bg-secondary);
+              border-color: var(--border-color);
+            "
+          >
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--text-color)"
+            >
+              New Orders
+            </h2>
+            <p class="text-3xl font-bold" style="color: var(--accent-color)">
+              456
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Today</p>
+          </div>
+          <!-- Card 4 -->
+          <div
+            class="bg-white p-6 rounded-lg shadow-md border col-span-1 md:col-span-2 lg:col-span-3"
+            style="
+              background-color: var(--bg-secondary);
+              border-color: var(--border-color);
+            "
+          >
+            <h2
+              class="text-xl font-semibold mb-4"
+              style="color: var(--text-color)"
+            >
+              Recent Activity
+            </h2>
+            <ul class="divide-y divide-gray-200 dark:divide-gray-600">
+              <li
+                class="py-3 flex justify-between items-center"
+                style="color: var(--text-color)"
+              >
+                <span>User John Doe registered</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >10 mins ago</span
+                >
+              </li>
+              <li
+                class="py-3 flex justify-between items-center"
+                style="color: var(--text-color)"
+              >
+                <span>New product "Laptop Pro" added</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >1 hour ago</span
+                >
+              </li>
+              <li
+                class="py-3 flex justify-between items-center"
+                style="color: var(--text-color)"
+              >
+                <span>Order #12345 completed</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >3 hours ago</span
+                >
+              </li>
+              <li
+                class="py-3 flex justify-between items-center"
+                style="color: var(--text-color)"
+              >
+                <span>User Jane Smith updated profile</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >1 day ago</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const body = document.body;
+      const sidebar = document.querySelector(".sidebar");
+      const mobileMenuOverlay = document.querySelector(".mobile-menu-overlay");
+
+      // Function to set theme
+      function setTheme(theme) {
+        if (theme === "dark") {
+          body.classList.add("dark-theme");
+          localStorage.setItem("theme", "dark");
+        } else {
+          body.classList.remove("dark-theme");
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      const savedTheme = localStorage.getItem("theme") || "light";
+      setTheme(savedTheme);
+
+      themeToggleBtn.addEventListener("click", () => {
+        if (body.classList.contains("dark-theme")) {
+          setTheme("light");
+        } else {
+          setTheme("dark");
+        }
+      });
+
+      function toggleSidebar() {
+        sidebar.classList.toggle("open");
+        mobileMenuOverlay.classList.toggle("active");
+      }
+
+      mobileMenuOverlay.addEventListener("click", () => {
+        if (sidebar.classList.contains("open")) {
+          toggleSidebar();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768 && sidebar.classList.contains("open")) {
+          toggleSidebar();
+        }
+      });
+    </script>
+  </body>
+</html>
