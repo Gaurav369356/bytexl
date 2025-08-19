@@ -1,0 +1,36 @@
+ CREATE TABLE Authors (
+    author_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    country VARCHAR(50)
+);
+
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(100),
+    author_id INT,
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+);
+
+INSERT INTO Authors (author_id, name, country) VALUES
+(1, 'Jane Austen', 'United Kingdom'),
+(2, 'Mark Twain', 'United States'),
+(3, 'Gabriel Garcia Marquez', 'Colombia'),
+(4, 'Leo Tolstoy', 'Russia');
+
+INSERT INTO Books (book_id, title, author_id) VALUES
+(101, 'Pride and Prejudice', 1),
+(102, 'Adventures of Huckleberry Finn', 2),
+(103, 'One Hundred Years of Solitude', 3),
+(104, 'Sense and Sensibility', 1),
+(105, 'The Adventures of Tom Sawyer', 2),
+(106, 'Love in the Time of Cholera', 3),
+(107, 'War and Peace', 4);
+
+SELECT
+    B.title AS BookTitle,
+    A.name AS AuthorName,
+    A.country AS AuthorCountry
+FROM
+    Books AS B
+INNER JOIN
+    Authors AS A ON B.author_id = A.author_id;
