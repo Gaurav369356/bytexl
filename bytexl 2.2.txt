@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Product Filter</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .product-item:hover {
+            transform: translateY(-5px);
+        }
+        .product-item h3 {
+            margin-top: 0;
+        }
+        .product-item p {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .product-item .price {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Product Catalog</h1>
+
+        <div class="filter-section">
+            <label for="category-filter">Filter by Category:</label>
+            <select id="category-filter">
+                <option value="all">All</option>
+                <option value="gadgets">Gadgets</option>
+                <option value="apparel">Apparel</option>
+                <option value="accessories">Accessories</option>
+            </select>
+        </div>
+
+        <div class="product-list" id="product-list">
+            </div>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            { name: 'Smartphone', category: 'gadgets', price: '$699' },
+            { name: 'T-Shirt', category: 'apparel', price: '$25' },
+            { name: 'Headphones', category: 'gadgets', price: '$199' },
+            { name: 'Jeans', category: 'apparel', price: '$50' },
+            { name: 'Watch', category: 'accessories', price: '$150' },
+            { name: 'Laptop', category: 'gadgets', price: '$1200' },
+            { name: 'Sunglasses', category: 'accessories', price: '$75' },
+            { name: 'Jacket', category: 'apparel', price: '$85' }
+        ];
+
+        const productListDiv = document.getElementById('product-list');
+        const filterDropdown = document.getElementById('category-filter');
+
+        // Function to render products based on the filter
+        function renderProducts(filteredProducts) {
+            // Clear the current list
+            productListDiv.innerHTML = '';
+            
+            // Loop through the filtered products and create HTML for each
+            filteredProducts.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product-item');
+                productDiv.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>Category: ${product.category}</p>
+                    <p class="price">Price: ${product.price}</p>
+                `;
+                productListDiv.appendChild(productDiv);
+            });
+        }
+
+        // Initial render of all products
+        renderProducts(products);
+
+        // Add an event listener to the dropdown
+        filterDropdown.addEventListener('change', () => {
+            const selectedCategory = filterDropdown.value;
+            
+            let filteredList = [];
+            
+            if (selectedCategory === 'all') {
+                // If "All" is selected, show all products
+                filteredList = products;
+            } else {
+                // Otherwise, filter the products by the selected category
+                filteredList = products.filter(product => product.category === selectedCategory);
+            }
+            
+            // Re-render the product list with the filtered items
+            renderProducts(filteredList);
+        });
+    </script>
+
+</body>
+</html>
